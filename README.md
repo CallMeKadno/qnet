@@ -26,20 +26,16 @@ I'm Kadno, a developer and cyber security analyst with a passion for building se
 </p>
 
 # ⛓️ <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Orbitron&pause=1000&color=DCDCDC&vCenter=true&width=435&height=20&lines=%3E_++RUN+QNET" alt="Typing SVG" /></a>
-A simple Privacy-Hardened Network Wrapper for Linux systems. Qnet is designed to route your traffic through **Tor, VPN, or both**, with system-wide enforcement, leak detection, and kill-switch protection out of the box.
-With support for manual and daemon modes, proxychains integration, and provides notifications for important events for both DE (Desktop Environment) and headless (Server) infrastructures.
+A simple Privacy-Hardened Network Wrapper for Linux systems. Qnet is designed to route your traffic through **Tor, VPN, or both**, with system-wide enforcement, leak detection, and kill-switch protection out of the box - *some features still in development after porting to python though*. With upcoming proxychains support and notifications for important events for both DE (_Desktop Environment_) and headless (_Server_) infrastructures.
 
 ## Features
-
-- System-wide **Tor routing** with optional proxychains chaining.
-- **ProtonVPN** support, including VPN-over-Tor mode.
-- **Daemon mode** for continuous monitoring and automatic kill-switch enforcement.
-- **Leak detection**: monitors public IP, DNS, and Tor connectivity.
-- **Kill-switch**: blocks all outgoing traffic if a leak is detected.
-- **Padding noise**: optional traffic padding in daemon modes to obscure patterns.
-- **Local subnet blocking**: prevents traffic to LAN or reserved subnets while active.
-- **Notifications** via `notify-send` for start, stop, leaks, and kill-switch events.
-- **Alias setup**: automatically adds `qnet` alias on first run.
+- System-wide **Tor routing** for all users
+- **Tor command shell** where every command automatically uses `torsocks` (TCP only)
+- **Tor Browser integration** with automatic launch if installed
+- **Dependency management**: automatically installs missing packages (`tor`, `torsocks`, `curl`)
+- **torsocks configuration cleanup** to suppress warnings
+- **New-line input in shell** ensures each command is executed on a fresh line
+- **Automatic cleanup**: restores iptables and stops Tor service on exit
 
 ## Installation
 
@@ -48,27 +44,22 @@ With support for manual and daemon modes, proxychains integration, and provides 
 ```bash
 git clone https://github.com/CallMeKadno/qnet.git
 cd qnet
-chmod +x qnet.sh
 ```
 
 2. Usage:
-`sudo ./qnet.sh <mode> [daemon]`
+`sudo python3 ./qnet.py {-arg}`
 
-| Mode                | Description                                                                              |
-| ------------------- | ---------------------------------------------------------------------------------------- |
-| `tor`               | Manual Tor mode; routes apps through Tor.                                                |
-| `proxy-tor`         | Manual mode: use `proxychains <app>` > Tor. Daemon enforces all TCP via Tor.             |
-| `protonvpn`         | Connects via ProtonVPN; monitors leaks and triggers kill-switch if needed.               |
-| `vpn-over-tor`      | Connects Tor first, then ProtonVPN over Tor; protects identity with multiple layers.     |
-| `daemon`            | Append to any mode to enable background monitoring and automatic enforcement.            |
-| `stop`              | Stops Qnet, flushes firewall rules, stops Tor/ProtonVPN, and restores normal networking. |
-| `--allow-monitored` | Override monitored network guard for restricted networks (e.g., corporate/VM networks).  |
-
+| Mode           | Description                                                                                  |
+|----------------|----------------------------------------------------------------------------------------------|
+| `-shell`       | Opens a Tor-enabled command shell; Commands automatically go through `torsocks`. TCP only.   |
+| `-browser`     | Launches Tor Browser with Tor routing active. Strongly encouraged.                           |
+| default        | Enables system-wide Tor routing for all users. Some browsers based on `chromium` bypass this!|
+| `stop`         | Stops Qnet, flushes iptables, stops the Tor service, and restores normal networking.         |
 
 Whilst it shouldn't need saying, this is the internet and people often download and pray:
 - Local subnet blocking only applies while Qnet is running. When stopped, LAN and normal networking is restored.
-- Padding noise adds dummy traffic to obscure patterns but is optional.
-- Avoid running Tor/VPN from monitored networks (corporate, university) unless using `--allow-monitored`.
+- Padding noise adds dummy traffic to obscure patterns but is optional (_feature in dev_).
+- Avoid running Tor/VPN from monitored networks (corporate, university) for obvious reasons.
 - Tor and VPNs are not silver bullets. Consider multiple layers for maximum privacy (e.g., VPN-over-Tor).
 - **Do not rely on Qnet alone** for end-to-end anonymity; always combine with safe browsing habits.
 
