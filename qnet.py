@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-# qnet.py — Privacy-hardened network wrapper
+# qnet.py - Privacy-hardened network wrapper
 # https://github.com/CallMeKadno
-# Version 0.3.2
-# Usage:
+# Version 0.3.5
 import subprocess
 import sys
 import time
 import os
 import signal
 import atexit
+import random
+import threading
 
 TOR_SERVICE = "tor@default"
 TRANS_PORT = 9040
@@ -16,6 +17,57 @@ DNS_PORT = 5353
 SOCKS_PORT = 9050
 
 REQUIRED_PACKAGES = ["tor", "torsocks", "curl"]
+
+SCUFFING_ENABLED = True
+SCUFF_INTERVAL = 0.5
+ # Add more URLs here for scuffing
+SCUFF_URLS = [
+    "https://check.torproject.org/",
+    "https://www.mozilla.org/",
+    "https://www.python.org/",
+    "https://www.github.com/",
+    "https://www.stackoverflow.com/",
+    "https://www.reddit.com/",
+    "https://www.medium.com/",
+    "https://www.linkedin.com/",
+    "https://www.netflix.com/",
+    "https://www.spotify.com/",
+    "https://www.imdb.com/",
+    "https://www.wikipedia.org/",
+    "https://www.quora.com/",
+    "https://www.amazon.com/",
+    "https://www.ebay.com/",
+    "https://www.twitter.com/",
+    "https://www.instagram.com/",
+    "https://www.twitch.tv/",
+    "https://www.nytimes.com/",
+    "https://www.bbc.com/",
+    "https://www.cnn.com/",
+    "https://www.hulu.com/",
+    "https://www.discord.com/",
+    "https://www.pinterest.com/",
+    "https://www.stackexchange.com/",
+    "https://www.shopify.com/",
+    "https://www.slack.com/",
+    "https://www.tiktok.com/",
+    "https://www.paypal.com/",
+    "https://www.airbnb.com/",
+    "https://www.booking.com/",
+    "https://www.etsy.com/",
+    "https://www.zoom.us/",
+    "https://www.dropbox.com/",
+    "https://www.salesforce.com/",
+    "https://www.adobe.com/",
+    "https://www.cloudflare.com/",
+    "https://www.nike.com/",
+    "https://www.apple.com/",
+    "https://www.microsoft.com/",
+    "https://www.spotify.com/",
+    "https://www.snapchat.com/",
+    "https://www.kickstarter.com/",
+    "https://www.canva.com/",
+    "https://www.trello.com/"
+]
 
 def run(cmd, check=True):
     try:
@@ -121,6 +173,17 @@ def launch_tor_browser():
     except FileNotFoundError:
         print("[!] Tor Browser not found. Install manually or via Snap.")
 
+def send_scuffing():
+    try:
+        url = random.choice(SCUFF_URLS)
+        subprocess.run(
+            ["torsocks", "curl", "-s", url],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+    except Exception:
+        pass
+
 def tor_command_shell():
     print("[*] Entering Tor command shell. Type 'exit' to quit.")
     print("[!] Only TCP traffic is routed through Tor. ICMP (ping) and UDP-only tools may not work.")
@@ -133,7 +196,15 @@ def tor_command_shell():
                 break
             if not cmd:
                 continue
-            subprocess.run(f"torsocks {cmd} 2>/dev/null", shell=True)
+
+            if SCUFFING_ENABLED:
+                num_threads = random.randint(1, 5)
+                for _ in range(num_threads):
+                    scuff_thread = threading.Thread(target=send_scuffing, daemon=True)
+                    scuff_thread.start()
+                time.sleep(SCUFF_INTERVAL)
+
+            subprocess.run(f"torsocks {cmd}", shell=True, stderr=subprocess.DEVNULL)
         except KeyboardInterrupt:
             print()
         except Exception as e:

@@ -31,6 +31,7 @@ A simple Privacy-Hardened Network Wrapper for Linux systems. Qnet is designed to
 ## Features
 - System-wide **Tor routing** for all users
 - **Tor command shell** where every command automatically uses `torsocks` (TCP only)
+- **Tor command shell padding noise** for extra obscurity at random
 - **Tor Browser integration** with automatic launch if installed
 - **Dependency management**: automatically installs missing packages (`tor`, `torsocks`, `curl`)
 - **torsocks configuration cleanup** to suppress warnings
@@ -58,7 +59,7 @@ cd qnet
 
 Whilst it shouldn't need saying, this is the internet and people often download and pray:
 - Local subnet blocking only applies while Qnet is running. When stopped, LAN and normal networking is restored.
-- Padding noise adds dummy traffic to obscure patterns but is optional (_feature in dev_).
+- Padding noise adds dummy traffic to obscure patterns in the `-shell` option.
 - Avoid running Tor/VPN from monitored networks (corporate, university) for obvious reasons.
 - Tor and VPNs are not silver bullets. Consider multiple layers for maximum privacy (e.g., VPN-over-Tor).
 - **Do not rely on Qnet alone** for end-to-end anonymity; always combine with safe browsing habits.
@@ -66,6 +67,6 @@ Whilst it shouldn't need saying, this is the internet and people often download 
 ## License
 
 <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nd.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
-<br><a href="https://github.com/CallMeKadno/QNet">QNet</a> © 2025 by <a href="https://github.com/CallMeKadno">Charles aka 'Kadno' </a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>
+<br><a href="https://github.com/CallMeKadno/qnet">Qnet</a> © 2025 by <a href="https://github.com/CallMeKadno">Charles aka 'Kadno' </a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>
 <br>
 <p align="center"><small><i>This is a beta README and is subject to change</i></small></p>
